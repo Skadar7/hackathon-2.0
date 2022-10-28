@@ -36,26 +36,33 @@ class HackPars:
 
     def get_links(self):
         print('Ищу ссылки...')
-        with open(self.file, 'r', newline='') as csvfile:
-            site_links = csv.reader(csvfile)
-            for site in site_links:
-                url = f'{site[0]}'
-                self.links.append(url)
-                self.company_and_texts.append({'link': url, 'text': ''})
-                self.driver.get(url)
-                menu_links = self.driver.find_element(By.TAG_NAME, 'header')\
-                    .find_elements(By.TAG_NAME, 'a')#или nav, пока так
-                for menu_link in menu_links:
-                    link = menu_link.get_attribute('href')
-                    if url in link:
-                        self.links.append(link)
+        exel_file = pd.read_excel(r'C:\Users\Professional\Desktop\cmp.xlsx')
+        temp = 0
+        for link in exel_file['Сайт']:
+            temp += 1
+            url = f'{link}'
+            print(url)
+            self.links.append(url)
+            self.company_and_texts.append({'link': url, 'text': ''})
+            self.driver.get(url)
+            menu_links = self.driver.find_element(By.LINK_TEXT, 'О компании')#.find_elements(By.TAG_NAME, 'a')#find_element(By.XPATH, "//nav[contains( text(), 'О компании')]").click()#find_elements(By.TAG_NAME, 'a')#.#или nav, пока так#
+            #print(menu_links.get_attribute('href'))
+            self.links.append(menu_links.get_attribute('href'))
+            """for menu_link in menu_links:
+                link = menu_link.get_attribute('href')
+                print(link)
+                if url in link:
+                    self.links.append(link)"""
+            if temp > 10:
                 break
 
     def get_text(self):
         l = len(self.links)
         print(f'Записываю текст, еще осталось {l}')
         i = 0
+        temp = 0
         for link in self.links:
+            temp += 1
             print(link)
             self.driver.get(link)
             if self.company_and_texts[i]['link'] not in link:
@@ -65,10 +72,12 @@ class HackPars:
             l -= 1
             print(f'Записываю текст, еще осталось {l}')
             print(self.company_and_texts)
+            if temp > 10:
+                break
 
 
 
-start = HackPars(r'C:\Users\Professional\Desktop\site_links.csv')
+start = HackPars(r'C:\Users\Professional\Desktop\cmp.csv')
 start.get_links()
 start.get_text()
 start.write_company_info()
