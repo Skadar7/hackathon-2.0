@@ -30,7 +30,7 @@ class HackPars:
         self.company_and_texts = []
 
     def write_company_info(self):
-        data = pd.DataFrame(self.company_and_texts).to_csv('link_adn_text.csv', encoding='cp1251')
+        data = pd.DataFrame(self.company_and_texts).to_csv('link_adn_text1.csv', encoding='cp1251')
         data1 = pd.DataFrame(self.company_and_texts)
         print(data1)
 
@@ -40,24 +40,27 @@ class HackPars:
         temp = 0
         for link in exel_file['Сайт']:
             temp += 1
+            if temp < 480:
+                continue
+            elif temp > 720:
+                break
             url = f'{link}'
             print(url)
-            self.links.append(url)
-            self.company_and_texts.append({'link': url, 'text': ''})
             self.driver.get(url)
             try:
                 menu_links = self.driver.find_element(By.LINK_TEXT, 'О компании')#.find_elements(By.TAG_NAME, 'a')#find_element(By.XPATH, "//nav[contains( text(), 'О компании')]").click()#find_elements(By.TAG_NAME, 'a')#.#или nav, пока так#
             except:
                 continue
             #print(menu_links.get_attribute('href'))
+            self.links.append(url)
+            self.company_and_texts.append({'link': url, 'text': ''})
             self.links.append(menu_links.get_attribute('href'))
             """for menu_link in menu_links:
                 link = menu_link.get_attribute('href')
                 print(link)
                 if url in link:
                     self.links.append(link)"""
-            if temp > 10:
-                break
+
 
     def get_text(self):
         l = len(self.links)
@@ -75,8 +78,8 @@ class HackPars:
             l -= 1
             print(f'Записываю текст, еще осталось {l}')
             print(self.company_and_texts)
-            if temp > 10:
-                break
+            """if temp > 10:
+                break"""
 
 
 
