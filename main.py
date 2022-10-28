@@ -45,7 +45,10 @@ class HackPars:
             self.links.append(url)
             self.company_and_texts.append({'link': url, 'text': ''})
             self.driver.get(url)
-            menu_links = self.driver.find_element(By.LINK_TEXT, 'О компании')#.find_elements(By.TAG_NAME, 'a')#find_element(By.XPATH, "//nav[contains( text(), 'О компании')]").click()#find_elements(By.TAG_NAME, 'a')#.#или nav, пока так#
+            try:
+                menu_links = self.driver.find_element(By.LINK_TEXT, 'О компании')#.find_elements(By.TAG_NAME, 'a')#find_element(By.XPATH, "//nav[contains( text(), 'О компании')]").click()#find_elements(By.TAG_NAME, 'a')#.#или nav, пока так#
+            except:
+                continue
             #print(menu_links.get_attribute('href'))
             self.links.append(menu_links.get_attribute('href'))
             """for menu_link in menu_links:
